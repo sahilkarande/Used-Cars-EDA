@@ -5,7 +5,12 @@ import numpy as np
 # Page setup
 st.set_page_config(page_title="Used Cars EDA Dashboard", layout="wide")
 st.title("🚗 Used Cars Price Analysis Dashboard")
-st.markdown("Explore trends, distributions, and insights from a dataset of used cars.")
+st.markdown("""
+### ✅ EDA Report: Used Cars Dataset
+
+This exploratory analysis focuses on understanding key factors affecting used car prices, such as mileage, power, and ownership history.  
+It also provides insights through interactive visualizations and filters, aiding predictive modeling and decision-making.
+""")
 
 # Load Data
 @st.cache_data
@@ -129,7 +134,8 @@ st.markdown("---")
 st.subheader("📈 Distribution Analysis")
 
 st.markdown("**1. Price Distribution**")
-st.area_chart(filtered_df['Price'].value_counts().sort_index())
+st.bar_chart(filtered_df['Price'].value_counts().sort_index(ascending=True))
+
 
 st.markdown("**2. Mileage Distribution**")
 st.line_chart(filtered_df['Mileage'].value_counts().sort_index())
@@ -171,18 +177,17 @@ st.markdown("**8. Avg Price by Owner Type**")
 owner_price = filtered_df.groupby("Owner_Type")["Price"].mean()
 st.bar_chart(owner_price)
 
-# Extreme Prices
 st.markdown("---")
 st.subheader("🔍 Most & Least Expensive Cars")
 
-col1, col2 = st.columns(2)
-with col1:
-    st.markdown("**💸 Most Expensive Car(s)**")
-    st.dataframe(filtered_df[filtered_df['Price'] == filtered_df['Price'].max()])
 
-with col2:
-    st.markdown("**💰 Least Expensive Car(s)**")
-    st.dataframe(filtered_df[filtered_df['Price'] == filtered_df['Price'].min()])
+st.markdown("### 💸 Most Expensive Car(s)")
+most_expensive = filtered_df[filtered_df['Price'] == filtered_df['Price'].max()]
+st.dataframe(most_expensive, use_container_width=True)
+
+st.markdown("### 💰 Least Expensive Car(s)")
+least_expensive = filtered_df[filtered_df['Price'] == filtered_df['Price'].min()]
+st.dataframe(least_expensive, use_container_width=True)
 
 # Mileage vs Year with Price gradient (simplified)
 st.markdown("---")

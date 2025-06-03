@@ -1,52 +1,59 @@
-### ✅ EDA Report: Used Cars Dataset
+# ✅ EDA Report: Used Cars Dataset
 
-#### 📌 **Objective**
-
-This EDA project focuses on analyzing a dataset of used car listings to:
-
-* Understand key factors affecting used car prices.
-* Identify patterns in car attributes like mileage, power, fuel type, and ownership history.
-* Prepare the dataset for predictive modeling.
-
-#### 📊 **Dataset Overview**
-
-The dataset includes:
-
-* **Numerical Features**: `Price`, `Mileage`, `Power`, `Engine`, `Kilometers Driven`
-* **Categorical Features**: `Fuel Type`, `Transmission`, `Owner Type`, `Location`, `Year`
-* **Target Variable**: `Price`
-
-#### 🛠️ **Tools Used**
-
-* **Python Libraries**: `pandas`, `numpy`, `matplotlib`, `seaborn`, `plotly`
+🔗 **Live Dashboard:** [usedcardataset.streamlit.app](https://usedcardataset.streamlit.app/)
 
 ---
 
-### 📈 Key Visual Insights (from notebook)
+## 📌 Objective
 
-I'll now generate a Streamlit dashboard that will include:
+This Exploratory Data Analysis (EDA) project focuses on a dataset of used car listings to:
 
-1. A data table
-2. Summary statistics
-3. Interactive filters
-4. Visualizations:
+- Understand key factors influencing used car prices.
+- Identify patterns in mileage, engine power, fuel type, transmission, and ownership history.
+- Prepare the dataset for future predictive modeling or business insights.
 
-   * Histogram of Prices
-   * Distribution of Mileage and Power
-   * Price vs Year (line or scatter)
-   * Box plots by Fuel Type or Owner Type
-5. Basic query functionality
+---
 
+## 📊 Dataset Overview
 
-### 🛠 How to Run:
+The dataset contains both numerical and categorical features related to used cars:
 
-1. Save this as `streamlit_app.py`.
-2. Make sure you have a cleaned CSV file (`used_cars_cleaned.csv`) in the same directory.
-3. Run using:
+- **Numerical Features**: `Price`, `Mileage`, `Power`, `Engine`, `Kilometers_Driven`
+- **Categorical Features**: `Fuel_Type`, `Transmission`, `Owner_Type`, `Location`, `Year`
+- **Target Variable**: `Price`
+
+---
+
+## 🛠️ Tools & Technologies Used
+
+- **Language**: Python  
+- **Libraries**: `pandas`, `numpy`, `seaborn`, `matplotlib`, `plotly`, `streamlit`
+
+---
+
+## 📈 Dashboard Features
+
+The deployed Streamlit dashboard includes:
+
+- 🔎 Interactive filters (Location, Fuel Type, Transmission, Price, etc.)
+- 📊 Visual insights:
+  - Price distribution by bins
+  - Mileage and engine size distribution
+  - Fuel type and transmission breakdown
+  - Price trends over the years
+  - Correlation matrix of numerical features
+- 🚘 Most and least expensive cars display
+- 🧮 Summary statistics and dataset preview
+
+Explore the live dashboard here: 👉 [https://usedcardataset.streamlit.app](https://usedcardataset.streamlit.app)
+
+---
+
+## 🛠 How to Run Locally
+
+1. Clone the repository and place the cleaned dataset (`used_cars_cleaned.csv`) in the root directory.
+2. Save the script as `streamlit_app.py`.
+3. In your terminal, run:
 
    ```bash
    streamlit run streamlit_app.py
-   ```
-
-If you’d like, I can also help you clean your dataset and generate that CSV file. Just upload the dataset or let me know!
-
