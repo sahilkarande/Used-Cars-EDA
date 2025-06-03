@@ -1,138 +1,196 @@
 import streamlit as st
 import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
+import numpy as np
 
-# Set page config
-st.set_page_config(page_title="Used Cars EDA Dashboard", layout="wide", initial_sidebar_state="expanded")
+# Page setup
+st.set_page_config(page_title="Used Cars EDA Dashboard", layout="wide")
+st.title("🚗 Used Cars Price Analysis Dashboard")
+st.markdown("Explore trends, distributions, and insights from a dataset of used cars.")
 
-# Load data
+# Load Data
 @st.cache_data
 def load_data():
-    df = pd.read_csv("used_cars_data.csv")
-    df['Mileage'] = pd.to_numeric(df['Mileage'].str.split().str[0], errors='coerce')
-    df['Engine'] = pd.to_numeric(df['Engine'].str.split().str[0], errors='coerce')
-    df['Power'] = pd.to_numeric(df['Power'].str.split().str[0], errors='coerce')
-    df['New_Price'] = pd.to_numeric(df['New_Price'].str.replace('Lakh', '').str.strip(), errors='coerce') * 100000
-    df['Brand'] = df['Name'].str.split().str[0]
-    df.fillna(method='ffill', inplace=True)
+    df = pd.read_csv("used_cars_cleaned.csv")
+
+    # Convert Price from lakhs to rupees
+    df['Price'] = pd.to_numeric(df['Price'], errors='coerce') * 1e5
+
+    # Clean & transform
+    df['Mileage'] = pd.to_numeric(df['Mileage'].astype(str).str.extract(r'(\d+\.?\d*)')[0], errors='coerce')
+    df['Engine'] = pd.to_numeric(df['Engine'].astype(str).str.extract(r'(\d+\.?\d*)')[0], errors='coerce')
+    df['Power'] = pd.to_numeric(df['Power'].astype(str).str.extract(r'(\d+\.?\d*)')[0], errors='coerce')
+    df['New_Price'] = df['New_Price'].astype(str).str.replace('Lakh', '', regex=False).str.strip()
+    df['New_Price'] = pd.to_numeric(df['New_Price'], errors='coerce') * 1e5
+    df['Brand'] = df['Name'].astype(str).str.split().str[0]
+
+    # Fill missing values
+    for col in df.select_dtypes(include=['number']).columns:
+        df[col] = df[col].fillna(df[col].median())
+    for col in df.select_dtypes(include=['object']).columns:
+        df[col] = df[col].fillna(df[col].mode()[0])
+
     return df
 
 df = load_data()
 
-# Sidebar filters
-st.sidebar.header("🔎 Filter Options")
-locations = st.sidebar.multiselect("Select Locations", options=df['Location'].unique(), default=df['Location'].unique())
-fuel_types = st.sidebar.multiselect("Select Fuel Types", options=df['Fuel_Type'].unique(), default=df['Fuel_Type'].unique())
-transmissions = st.sidebar.multiselect("Select Transmissions", options=df['Transmission'].unique(), default=df['Transmission'].unique())
+# Sidebar Filters
+st.sidebar.header("🔍 Filters")
 
-df = df[df['Location'].isin(locations) & df['Fuel_Type'].isin(fuel_types) & df['Transmission'].isin(transmissions)]
+# Price Range slider
+min_price = int(df['Price'].min())
+max_price = int(df['Price'].max())
+price_range = st.sidebar.slider(
+    "Select Price Range (₹)", 
+    min_value=min_price, 
+    max_value=max_price, 
+    value=(min_price, max_price), 
+    step=100000
+)
 
-# Title
-st.title("🚗 Used Cars Data Analysis Dashboard")
-st.markdown("""
-This interactive dashboard helps in understanding used car listings across various cities by visualizing:
-- Price variations
-- Feature distributions
-- Outliers and patterns
-- Most and least expensive listings
-- Correlations among numeric features
-""")
+# Mileage Range slider
+min_mileage = int(df['Mileage'].min())
+max_mileage = int(df['Mileage'].max())
+mileage_range = st.sidebar.slider(
+    "Select Mileage Range (kmpl)", 
+    min_value=min_mileage, 
+    max_value=max_mileage, 
+    value=(min_mileage, max_mileage),
+    step=1
+)
 
-# Overview Section
-st.header("📊 Dataset Overview")
-st.dataframe(df.head(10))
-st.write("Shape of dataset:", df.shape)
+# Engine Size Range slider
+min_engine = int(df['Engine'].min())
+max_engine = int(df['Engine'].max())
+engine_range = st.sidebar.slider(
+    "Select Engine Size Range (CC)", 
+    min_value=min_engine, 
+    max_value=max_engine, 
+    value=(min_engine, max_engine),
+    step=50
+)
 
-# Descriptive Statistics
-st.subheader("📈 Summary Statistics")
-st.dataframe(df.describe())
+# Power Range slider
+min_power = int(df['Power'].min())
+max_power = int(df['Power'].max())
+power_range = st.sidebar.slider(
+    "Select Power Range (bhp)", 
+    min_value=min_power, 
+    max_value=max_power, 
+    value=(min_power, max_power),
+    step=1
+)
 
-# Categorical Distributions
-st.subheader("🔧 Categorical Feature Distributions")
-cats = ['Fuel_Type', 'Transmission', 'Owner_Type']
-cols = st.columns(len(cats))
-for i, cat in enumerate(cats):
-    with cols[i]:
-        fig, ax = plt.subplots(figsize=(4, 3))
-        sns.countplot(x=cat, data=df, ax=ax)
-        plt.xticks(rotation=45)
-        st.pyplot(fig)
+# Year Range slider
+min_year = int(df['Year'].min())
+max_year = int(df['Year'].max())
+year_range = st.sidebar.slider(
+    "Select Year Range", 
+    min_value=min_year, 
+    max_value=max_year, 
+    value=(min_year, max_year),
+    step=1
+)
 
-# Histograms and Boxplots
-st.subheader("📦 Numerical Feature Distributions")
-numerical_cols = ['Price', 'Engine', 'Mileage']
-for col in numerical_cols:
-    st.markdown(f"#### {col} Distribution")
-    c1, c2 = st.columns(2)
-    with c1:
-        fig, ax = plt.subplots()
-        sns.histplot(df[col], bins=30, ax=ax)
-        st.pyplot(fig)
-    with c2:
-        fig, ax = plt.subplots()
-        sns.boxplot(x=df[col], ax=ax)
-        st.pyplot(fig)
+# Categorical filters
+locations = st.sidebar.multiselect("Select Location(s)", sorted(df['Location'].unique()), default=None)
+fuel_types = st.sidebar.multiselect("Select Fuel Type(s)", sorted(df['Fuel_Type'].unique()), default=None)
+transmissions = st.sidebar.multiselect("Select Transmission(s)", sorted(df['Transmission'].unique()), default=None)
+owner_types = st.sidebar.multiselect("Select Owner Type(s)", sorted(df['Owner_Type'].unique()), default=None)
 
-# Price by Year
-st.subheader("📅 Average Price by Year")
-yearly_avg = df.groupby('Year')['Price'].mean().reset_index()
-fig, ax = plt.subplots()
-sns.lineplot(data=yearly_avg, x='Year', y='Price', marker='o', ax=ax)
-st.pyplot(fig)
+# Apply filters
+filtered_df = df[
+    (df['Price'] >= price_range[0]) & (df['Price'] <= price_range[1]) &
+    (df['Mileage'] >= mileage_range[0]) & (df['Mileage'] <= mileage_range[1]) &
+    (df['Engine'] >= engine_range[0]) & (df['Engine'] <= engine_range[1]) &
+    (df['Power'] >= power_range[0]) & (df['Power'] <= power_range[1]) &
+    (df['Year'] >= year_range[0]) & (df['Year'] <= year_range[1])
+]
 
-# Price by Location
-st.subheader("📍 Price Distribution by Location")
-fig, ax = plt.subplots(figsize=(12, 6))
-sns.boxplot(data=df, x='Location', y='Price', ax=ax)
-plt.xticks(rotation=45)
-st.pyplot(fig)
+if locations:
+    filtered_df = filtered_df[filtered_df['Location'].isin(locations)]
+if fuel_types:
+    filtered_df = filtered_df[filtered_df['Fuel_Type'].isin(fuel_types)]
+if transmissions:
+    filtered_df = filtered_df[filtered_df['Transmission'].isin(transmissions)]
+if owner_types:
+    filtered_df = filtered_df[filtered_df['Owner_Type'].isin(owner_types)]
 
-# Scatterplots
-st.subheader("🧮 Price Correlation with Features")
-features = ['Mileage', 'Engine', 'Power', 'Kilometers_Driven']
-for feat in features:
-    st.markdown(f"#### Price vs {feat}")
-    fig, ax = plt.subplots()
-    sns.scatterplot(x=df[feat], y=df['Price'], ax=ax)
-    st.pyplot(fig)
+# Dataset Summary
+st.subheader("📊 Dataset Overview")
+st.dataframe(filtered_df.head(10), use_container_width=True)
 
-# Multivariate Interaction
-st.subheader("🧪 Price by Fuel Type and Transmission")
-fig, ax = plt.subplots(figsize=(10, 5))
-sns.boxplot(data=df, x='Fuel_Type', y='Price', hue='Transmission', ax=ax)
-st.pyplot(fig)
+col1, col2, col3 = st.columns(3)
+col1.metric("Total Cars", len(filtered_df))
+col2.metric("Avg Price (₹)", f"{filtered_df['Price'].mean():,.0f}")
+col3.metric("Avg Mileage (kmpl)", f"{filtered_df['Mileage'].mean():.2f}")
 
-# Outliers
-st.subheader("🚨 Outlier Detection")
-outlier_cols = ['Price', 'Engine', 'Power']
-cols = st.columns(3)
-for i, feat in enumerate(outlier_cols):
-    with cols[i]:
-        fig, ax = plt.subplots()
-        sns.boxplot(x=df[feat], ax=ax)
-        st.pyplot(fig)
+# --- Visualizations ---
+st.markdown("---")
+st.subheader("📈 Distribution Analysis")
 
-# Most & Least Expensive Cars
-st.subheader("💰 Most & Least Expensive Cars")
-st.markdown("**Most Expensive:**")
-st.write(df[df['Price'] == df['Price'].max()])
-st.markdown("**Least Expensive:**")
-st.write(df[df['Price'] == df['Price'].min()])
+st.markdown("**1. Price Distribution**")
+st.area_chart(filtered_df['Price'].value_counts().sort_index())
 
-# Owner Type vs Price
-st.subheader("🧍 Owner Type vs Average Price")
-avg_price_owner = df.groupby('Owner_Type')['Price'].mean().reset_index()
-fig, ax = plt.subplots()
-sns.barplot(x='Owner_Type', y='Price', data=avg_price_owner, order=['First', 'Second', 'Third', 'Fourth & Above'], ax=ax)
-st.pyplot(fig)
+st.markdown("**2. Mileage Distribution**")
+st.line_chart(filtered_df['Mileage'].value_counts().sort_index())
 
-# Mileage vs Year vs Price
-st.subheader("📉 Mileage vs Year (colored by Price)")
-fig, ax = plt.subplots()
-sns.scatterplot(x='Year', y='Mileage', hue='Price', data=df, ax=ax)
-st.pyplot(fig)
+st.markdown("**3. Engine Size Distribution**")
+st.bar_chart(filtered_df['Engine'].value_counts().sort_index())
+
+st.markdown("---")
+st.subheader("🧭 Category-Based Insights")
+
+st.markdown("**4. Car Count by Fuel Type**")
+st.bar_chart(filtered_df['Fuel_Type'].value_counts())
+
+st.markdown("**5. Cars by Transmission**")
+st.bar_chart(filtered_df['Transmission'].value_counts())
+
+st.markdown("**6. Cars by Owner Type**")
+st.bar_chart(filtered_df['Owner_Type'].value_counts())
+
+# Yearly Price Trend
+st.markdown("---")
+st.subheader("📅 Average Price Over the Years")
+year_trend = filtered_df.groupby("Year")["Price"].mean()
+st.line_chart(year_trend)
+
+# Price Comparison by Location
+st.markdown("**7. Price by Location**")
+location_price = filtered_df.groupby("Location")["Price"].mean().sort_values()
+st.bar_chart(location_price)
+
+# Correlation table
+st.markdown("---")
+st.subheader("📊 Correlation Table (Numerical Features)")
+corr_matrix = filtered_df[['Price', 'Mileage', 'Power', 'Engine', 'Kilometers_Driven']].corr()
+st.dataframe(corr_matrix.style.background_gradient(cmap='YlGnBu'), use_container_width=True)
+
+# Price by Owner Type
+st.markdown("**8. Avg Price by Owner Type**")
+owner_price = filtered_df.groupby("Owner_Type")["Price"].mean()
+st.bar_chart(owner_price)
+
+# Extreme Prices
+st.markdown("---")
+st.subheader("🔍 Most & Least Expensive Cars")
+
+col1, col2 = st.columns(2)
+with col1:
+    st.markdown("**💸 Most Expensive Car(s)**")
+    st.dataframe(filtered_df[filtered_df['Price'] == filtered_df['Price'].max()])
+
+with col2:
+    st.markdown("**💰 Least Expensive Car(s)**")
+    st.dataframe(filtered_df[filtered_df['Price'] == filtered_df['Price'].min()])
+
+# Mileage vs Year with Price gradient (simplified)
+st.markdown("---")
+st.subheader("🚘 Mileage vs Year (colored by price range)")
+df_copy = filtered_df.copy()
+df_copy['Price_Category'] = pd.qcut(df_copy['Price'], q=3, labels=["Low", "Mid", "High"])
+st.scatter_chart(df_copy, x='Year', y='Mileage', color='Price_Category')
 
 # Footer
 st.markdown("---")
-st.markdown("Built with ❤️ using Streamlit | Data Source: Used Cars Listings")
+st.markdown("📌 _Created with ❤️ by Sahil Karande | Streamlit 1.45.0 Compatible_")
