@@ -1,89 +1,88 @@
-# 🚗 Used Cars Price Analysis Dashboard
+# Used Cars Price Analysis Dashboard
 
-🔗 **Live Dashboard:** [usedcardataset.streamlit.app](https://usedcardataset.streamlit.app/)
-https://github.com/sahilkarande/Used-Cars-EDA/blob/main/Used%20Cars%20Price%20Analysis.png
+An interactive **Exploratory Data Analysis (EDA) dashboard** built with Python and Streamlit to analyze used car prices, identify market trends, and understand the factors influencing vehicle resale value.
 
-![Used Cars Analysis](https://github.com/sahilkarande/Used-Cars-EDA/blob/main/Used%20Cars%20Price%20Analysis.png)
+**[Live Dashboard](https://usedcardataset.streamlit.app/)** | **[GitHub Repository](https://github.com/sahilkarande/Used-Cars-EDA)**
 
+## Dashboard Preview
+
+![Used Cars Price Analysis Dashboard](https://github.com/sahilkarande/Used-Cars-EDA/blob/main/Used%20Cars%20Price%20Analysis.png?raw=true)
+
+## Project Overview
+
+The dashboard analyzes used car listings to explore pricing patterns across vehicle brands, fuel types, transmission, mileage, engine capacity, ownership history, and location.
+
+It provides interactive visualizations and data-driven insights to support better decision-making for buyers, sellers, and dealerships.
+
+## Key Performance Indicators
+
+| Metric | Value |
+|---|---|
+| Total Car Listings | 7,244 |
+| Average Price | ₹8,83,329 |
+| Average Mileage | 18.12 kmpl |
+| Average Engine Power | 112.25 bhp |
+| Most Common Fuel Type | Diesel |
+| Most Listed Brand | Maruti |
+
+## Key Insights
+
+- **Brand & Location:** Vehicle prices vary significantly across brands and geographic locations.
+- **Fuel Type:** Diesel vehicles generally command slightly higher prices.
+- **Transmission:** Automatic cars tend to be more expensive, particularly newer models.
+- **Ownership:** First-owner vehicles typically retain higher resale values.
+- **Engine & Power:** Higher engine capacity and power generally correlate with increased prices.
+
+## Dashboard Features
+
+- **Interactive Filters:** Brand, location, fuel type, transmission, ownership, and price range.
+- **Price Analysis:** Distribution of vehicle prices and brand-wise comparisons.
+- **Vehicle Insights:** Mileage, engine power, fuel type, and transmission analysis.
+- **Trend Analysis:** Year-wise pricing patterns and numerical correlations.
+- **KPI Dashboard:** Summary metrics and key market statistics.
+- **Data Explorer:** Interactive dataset preview and vehicle comparisons.
+
+## Technology Stack
+
+| Category | Technologies |
+|---|---|
+| Programming | Python |
+| Data Processing | Pandas, NumPy |
+| Visualization | Plotly, Matplotlib, Seaborn |
+| Dashboard Framework | Streamlit |
+| Deployment | Streamlit Community Cloud |
+
+## Installation & Setup
+
+**1. Clone the repository**
+
+```bash
+git clone https://github.com/sahilkarande/Used-Cars-EDA.git
+cd Used-Cars-EDA
+```
+
+**2. Install dependencies**
+
+```bash
+pip install pandas numpy matplotlib seaborn plotly streamlit
+```
+
+**3. Run the dashboard**
+
+Ensure the cleaned dataset (`used_cars_cleaned.csv`) is available in the required directory.
+
+```bash
+streamlit run streamlit_app.py
+```
+
+The dashboard will be accessible at `http://localhost:8501`.
+
+## Future Enhancements
+
+- Machine learning-based used car price prediction.
+- Advanced market segmentation and comparative analysis.
+- Automated data updates and real-time pricing insights.
 
 ---
 
-## 📌 Objective
-
-This Exploratory Data Analysis (EDA) project explores a used cars dataset to:
-
-- Understand key factors influencing used car prices.
-- Identify trends in mileage, engine size, fuel type, transmission, and ownership.
-- Derive actionable insights for consumers, sellers, or dealerships.
-- Prepare the dataset for future predictive modeling or business applications.
-
----
-
-## 📊 Dataset Overview
-
-The dataset contains both **numerical** and **categorical** attributes of used car listings:
-
-- **Numerical Features**: `Price`, `Mileage`, `Power`, `Engine`, `Kilometers_Driven`
-- **Categorical Features**: `Brand`, `Fuel_Type`, `Transmission`, `Owner_Type`, `Location`, `Year`
-- **Target Variable**: `Price`
-
----
-
-## 💡 Key Performance Indicators
-
-| KPI                          | Value         |
-|-----------------------------|---------------|
-| 📦 **Total Listings**       | 7244          |
-| 💰 **Avg. Price (₹)**       | ₹883,329      |
-| ⛽ **Avg. Mileage (kmpl)**   | 18.12         |
-| 🔧 **Avg. Power (bhp)**      | 112.25        |
-| 🛢️ **Most Common Fuel**     | Diesel        |
-| 🏷️ **Top Brand**            | Maruti        |
-
----
-
-## 🧠 Insights Derived
-
-- 💸 **Price varies significantly** based on location and brand; luxury brands dominate higher price brackets.
-- ⛽ **Diesel cars are slightly costlier**, but their mileage advantage is not always significant.
-- ⚙️ **Automatic transmissions** are more expensive and mostly appear in newer models.
-- 🚦 **First-owner cars** are valued higher and are usually more recent.
-- 📈 **Positive correlation** exists between `Engine`, `Power`, and `Price`.
-
----
-
-## 📈 Dashboard Features
-
-The interactive Streamlit dashboard includes:
-
-- 🔎 **Dynamic Filters**: Location, Fuel Type, Transmission, Owner Type, Brand, Price Range, etc.
-- 📊 **Visual Analytics**:
-  - Distribution plots for price, mileage, and power
-  - Brand-wise price comparisons
-  - Fuel and transmission breakdown
-  - Year-wise trends in car prices
-  - Correlation heatmap for numerical features
-- 🚘 **Highlights**: Most and least expensive cars
-- 🧮 **Quick Stats**: Summary cards and KPIs
-- 🧾 **Data Preview**: Interactive dataframe viewer
-
-Explore the live version 👉 [https://usedcardataset.streamlit.app](https://usedcardataset.streamlit.app)
-
----
-
-## 🛠️ Tools & Technologies
-
-- **Language**: Python  
-- **Libraries**: `pandas`, `numpy`, `matplotlib`, `seaborn`, `plotly`, `streamlit`
-- **Deployment**: Streamlit Cloud
-
----
-
-## 🧪 How to Run Locally
-
-1. Clone this repository and place the cleaned dataset (`used_cars_cleaned.csv`) in the root folder.
-2. Save the dashboard script as `streamlit_app.py`.
-3. Run the app using:
-
-   ```bash
-   streamlit run streamlit_app.py
+**Explore the Dashboard:** https://usedcardataset.streamlit.app/
