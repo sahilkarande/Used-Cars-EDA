@@ -6,7 +6,7 @@ An interactive **Exploratory Data Analysis (EDA) dashboard** built with Python a
 
 ## Dashboard Preview
 
-![Used Cars Price Analysis Dashboard](https://github.com/sahilkarande/Used-Cars-EDA/blob/main/Used%20Cars%20Price%20Analysis.png?raw=true)
+![Used Cars Price Analysis Dashboard](https://github.com/sahilkarande/Used-Cars-EDA/blob/main/thumbnail.png?raw=true)
 
 ## Project Overview
 
